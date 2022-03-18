@@ -1,49 +1,70 @@
 <div class="container">
-  <form class="card">
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
     <h1>Angular Forms</h1>
 
     <div class="form-control">
       <label>Email</label>
-      <input type="text" placeholder="Email">
-      <div class="validation"></div>
+      <input type="text" placeholder="Email" formControlName="email">
+      <div
+        class="validation"
+        *ngIf="form.get('email')!.invalid && form.get('email')!.touched"
+      >
+        <small *ngIf="form.get('email')!.errors?.['required']">
+          Field e-mail should not be empty
+        </small>
+        <small *ngIf="form.get('email')!.errors?.['email']">
+          Input correct e-mail
+        </small>
+      </div>
     </div>
 
     <div class="form-control">
-      <label>Пароль</label>
-      <input type="password" placeholder="Пароль">
-      <div class="validation"></div>
+      <label>Password</label>
+      <input type="password" placeholder="Password" formControlName="password">
+      <div
+        class="validation"
+        *ngIf="form.get('password')!.invalid && form.get('password')!.touched"
+      >
+        <small *ngIf="form.get('password')!.errors?.['required']">
+          Field password should not be empty
+        </small>
+        <small *ngIf="form.get('password')!.errors?.['minlength']">
+          Password should be {{form.get('password')!.errors?.['minlength'].requiredLength}} characters long
+        </small>
+      </div>
     </div>
 
-    <div class="card">
-      <h2>Адрес</h2>
+    <div class="card" formGroupName="address">
+      <h2>Address</h2>
 
       <div class="form-control">
-        <label>Страна</label>
+        <label>Country</label>
 
-        <select>
-          <option value="ru">Россия</option>
-          <option value="ua">Украина</option>
-          <option value="by">Беларусь</option>
+        <select formControlName="country">
+          <option value="ru">Russia</option>
+          <option value="ua">Ukraine</option>
+          <option value="by">Belarus</option>
+          <option value="kz">Kazakhstan</option>
         </select>
       </div>
 
       <div class="form-control">
-        <input type="text">
+        <input type="text" formControlName="city" placeholder="City">
       </div>
 
-      <button class="btn">Выбрать столицу</button>
+      <button class="btn" type="button" (click)="setCapital()">Choose capital</button>
     </div>
 
     <div class="card">
-      <h2>Ваши навыки</h2>
-      <button class="btn">Добавить умение</button>
+      <h2>Your skills</h2>
+      <button class="btn" type="button">Add skill</button>
       <div class="form-control">
         <label></label>
         <input type="text">
       </div>
     </div>
 
-    <button class="btn">Отправить</button>
+    <button class="btn" type="submit" [disabled]="form.invalid">Send</button>
 
   </form>
 </div>
