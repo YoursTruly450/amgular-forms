@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MyValidators } from './my.validators';
 
 @Component({
   selector: 'app-root',
@@ -11,18 +12,25 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = new FormGroup({
-      email: new FormControl('', [Validators.email, Validators.required]),
+      email: new FormControl('', [
+        Validators.email,
+        Validators.required,
+        MyValidators.restrictedEmails
+      ], [MyValidators.uniqueEmail] as AsyncValidatorFn[]),
       password: new FormControl(null, [Validators.required, Validators.minLength(6)]),
       address: new FormGroup({
         country: new FormControl('kz'),
         city: new FormControl('Astana', Validators.required)
-      })
+      }),
+      skills: new FormArray([])
     });
   }
 
   submit() {
     if (this.form.valid) {
       const formData = {...this.form.value};
+      console.log(formData);
+      this.form.reset();
     }
   }
 
@@ -40,5 +48,15 @@ export class AppComponent implements OnInit {
     this.form.patchValue({
       address: {city}
     });
+  }
+
+  addSkill() {
+    const control = new FormControl('', Validators.required);
+    // (<FormArray>this.form.get('skills')).push();
+    (this.form.get('skills') as FormArray).push(control);
+  }
+
+  getControls() {
+    return this.form.get('skills') as FormArray;
   }
 }

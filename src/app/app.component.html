@@ -15,6 +15,12 @@
         <small *ngIf="form.get('email')!.errors?.['email']">
           Input correct e-mail
         </small>
+        <small *ngIf="form.get('email')!.errors?.['restrictedEmail']">
+          Email {{form.get('email').value}} is restricted
+        </small>
+        <small *ngIf="form.get('email')!.errors?.['uniqueEmail']">
+          Email {{form.get('email').value}} is not unique
+        </small>
       </div>
     </div>
 
@@ -55,16 +61,19 @@
       <button class="btn" type="button" (click)="setCapital()">Choose capital</button>
     </div>
 
-    <div class="card">
+    <div class="card" formGroupName="skills">
       <h2>Your skills</h2>
-      <button class="btn" type="button">Add skill</button>
-      <div class="form-control">
-        <label></label>
-        <input type="text">
+      <button class="btn" type="button" (click)="addSkill()">Add skill</button>
+      <div
+        class="form-control"
+        *ngFor="let control of getControls().controls; let i = index"
+      >
+        <label>Skill {{ i + 1 }}</label>
+        <input type="text" [formControlName]="i">
       </div>
     </div>
 
-    <button class="btn" type="submit" [disabled]="form.invalid">Send</button>
+    <button class="btn" type="submit" [disabled]="form.invalid || form.pending">Send</button>
 
   </form>
 </div>
